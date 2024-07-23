@@ -186,5 +186,12 @@ class Employee:
         return cls.instance_from_db(row) if row else None
 
     def reviews(self):
-        """Return list of reviews associated with current employee"""
-        pass
+        """Get reviews for the current Employee instance"""
+        from review import Review
+        sql = """
+            SELECT id, year, summary, employee_id
+            FROM reviews
+            WHERE employee_id = ?
+        """
+        review_rows = CURSOR.execute(sql, (self.id,)).fetchall()
+        return [Review.instance_from_db(row) for row in review_rows]
